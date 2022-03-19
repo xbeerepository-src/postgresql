@@ -1,0 +1,24 @@
+schema-version: 1.0
+
+
+const:
+  serverdir: /srv/pgsql
+  datadir: "{% serverdir %}/data"
+
+in:
+  version: 14.2
+
+
+dependencies:
+  - ./builder
+
+
+provision:
+  - shell:
+      cmds:
+        - install -v -dm700 {% datadir %}
+        - install -v -dm755 /run/postgresql
+        - chown -Rv {% xbeeUser %}:{% xbeeGroup %} {% serverdir %} /run/postgresql
+  - shell:
+      cmd: /usr/bin/initdb -D {% datadir %}
+      user: "{% xbeeUser %}"

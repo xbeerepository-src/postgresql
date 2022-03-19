@@ -1,0 +1,22 @@
+schema-version: 1.0
+
+type: builder
+
+dependencies:
+  - readline
+  - zlib
+
+provision:
+  - url:
+      from: https://ftp.postgresql.org/pub/source/v{% version %}/postgresql-{% version %}.tar.bz2
+      todir: "{% xbeeSrc %}"
+
+
+build:
+  - shell:
+      cmds:
+        - sed -i '/DEFAULT_PGSOCKET_DIR/s@/tmp@/run/postgresql@' src/include/pg_config_manual.h
+        - ./configure --prefix=/usr --enable-thread-safety --docdir=/usr/share/doc/postgresql-{% version %}
+        - make
+        - make install DESTDIR={% xbeeOut %}
+      directory: "{% xbeeSrc %}/postgresql-{% version %}"
